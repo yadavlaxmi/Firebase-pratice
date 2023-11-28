@@ -3,6 +3,7 @@ import './App.css';
 import {getAuth,createUserWithEmailAndPassword} from "firebase/auth"
 import SignupPage from "./pages/Signup";
 import {app} from "./Firebase/Firebase"
+import SigninPage from "./pages/Signin";
 const db=getDatabase(app)
 const auth=getAuth(app);
 function App() {
@@ -26,6 +27,7 @@ function App() {
 
       <button onClick={signupUser}>create data</button>
       <SignupPage/>
+      <SigninPage/>
     </div>
   );
 }
