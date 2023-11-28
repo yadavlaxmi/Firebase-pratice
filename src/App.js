@@ -1,6 +1,7 @@
 import {getDatabase,ref,set}from "firebase/database"
 import './App.css';
 import {getAuth,createUserWithEmailAndPassword} from "firebase/auth"
+import SignupPage from "./pages/Signup";
 import {app} from "./Firebase/Firebase"
 const db=getDatabase(app)
 const auth=getAuth(app);
@@ -24,6 +25,7 @@ function App() {
       <button onClick={putData}>put data</button>
 
       <button onClick={signupUser}>create data</button>
+      <SignupPage/>
     </div>
   );
 }
