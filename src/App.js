@@ -1,69 +1,60 @@
-import { getDatabase, ref, set } from "firebase/database";
+// import {getDatabase,ref,set}from "firebase/database"
+import {useEffect,useState} from "react"
 import './App.css';
-import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import {getAuth,onAuthStateChanged,signOut} from "firebase/auth"
 import SignupPage from "./pages/Signup";
-import { app } from "./Firebase/Firebase";
+import {app} from "./Firebase/Firebase"
 import SigninPage from "./pages/Signin";
-import { useEffect, useState } from "react";
-
-const db = getDatabase(app);
-const auth = getAuth(app);
-
+// const db=getDatabase(app)
+const auth=getAuth(app);
 function App() {
-  const [user, setUser] = useState(null);
-  const SignOut = (auth) => {
-    
-    auth.signOut().then(() => {
-    }).catch((error) => {
-      console.error(error);
-    });
-  };
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
+  const[user,setUser]=useState(null);
+
+  useEffect(()=>{
+    onAuthStateChanged(auth,user=>{
+      if (user){
+        console.log("Hello",user);
         setUser(user);
-      } else {
-        console.log("You are logged out");
+      }
+      else{
+        console.log("you are logged out")
         setUser(null);
       }
-    });
-  }, []);
-
-  if (user === null) {
-    return (
+    })
+  },[])
+  if (user===null){
+    return(
       <div className="App">
-        <SigninPage />
-        <SignupPage />
-      </div>
-    );
+      <h1>Firebase aap</h1>
+      {/* <button onClick={putData}>put data</button>
+
+      <button onClick={signupUser}>create data</button> */}
+      <SignupPage/>
+      <SigninPage/>
+    </div>
+  );
+    
   }
-
-  // Uncommented code for signupUser and putData functions
-  const signupUser = () => {
-    createUserWithEmailAndPassword(
-      auth,
-      "laxmiyadav21@gmail.com",
-      "laxmi@123"
-    ).then((value) => console.log(value))
-    .catch((error) => console.error(error));
-  };
-
-  const putData = () => {
-    set(ref(db, "users/laxmi"), {
-      id: 1,
-      name: "laxmi",
-      age: "17",
-    }).then(() => console.log("Data added successfully"))
-    .catch((error) => console.error(error));
-  };
-
+  // const signupUser=()=>{
+  //   createUserWithEmailAndPassword
+  //   (auth,"laxmiyadav21@gmail.com",
+  //   "laxmi@123"
+  //   ).then((value)=>console.log(value));
+  // };
+  // const putData=()=>{
+  //   set(ref(db,"users/laxmi"),{
+  //     id:1,
+  //     name:"laxmi",
+  //     age:"17",
+  //   })
+  // }
   return (
     <div className="App">
-      <h1>Firebase app</h1>
-      <button onClick={putData}>Put Data</button>
-      <button onClick={signupUser}>Create User</button>
-      <h1>Hello {user.email}</h1>
-      <button onClick={() => SignOut(auth)}>Logout</button>
+      <h1> hello {user.email}</h1>
+      {/* <button onClick={putData}>put data</button>
+
+      <button onClick={signupUser}>create data</button> */}
+     <button onClick={()=>signOut(auth)}>Logout</button>
     </div>
   );
 }
