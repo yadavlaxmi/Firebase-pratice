@@ -1,4 +1,4 @@
-import {getDocs,getFirestore,collection,addDoc,doc,getDoc,query,where} from "firebase/firestore";
+import {updateDoc,getDocs,getFirestore,collection,addDoc,doc,getDoc,query,where} from "firebase/firestore";
 import {app} from "./Firebase/Firebase"
 import "./App.css";
 const firestore = getFirestore(app)
@@ -31,6 +31,12 @@ const App=()=>{
    const snapshot= await getDocs(q);
     snapshot.forEach(data => console.log(data.data()));
   };
+  const update=async()=>{
+    const docRef=doc(firestore,"cities","6R3V1fpoHMQeJx4fmqtM");
+    await updateDoc(docRef,{
+      name:"kanpur"
+    })
+  }
   return(
 
   <div>
@@ -39,6 +45,7 @@ const App=()=>{
       <button onClick={makeSubCollection}>Put sub Data</button>
       <button onClick={getDocument}>Get Document</button>
       <button onClick={getDocumentsByQuery}>Get Document by query</button>
+      <button onClick={update}>Update</button>
 
   </div>
   )
