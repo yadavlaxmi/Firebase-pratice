@@ -1,62 +1,46 @@
-// import {getDatabase,ref,set}from "firebase/database"
-import {useEffect,useState} from "react"
-import './App.css';
-import {getAuth,onAuthStateChanged,signOut} from "firebase/auth"
-import SignupPage from "./pages/Signup";
+import {getDocs,getFirestore,collection,addDoc,doc,getDoc,query,where} from "firebase/firestore";
 import {app} from "./Firebase/Firebase"
-import SigninPage from "./pages/Signin";
-// const db=getDatabase(app)
-const auth=getAuth(app);
-function App() {
-  const[user,setUser]=useState(null);
-
-  useEffect(()=>{
-    onAuthStateChanged(auth,user=>{
-      if (user){
-        console.log("Hello",user);
-        setUser(user);
-      }
-      else{
-        console.log("you are logged out")
-        setUser(null);
-      }
-    })
-  },[])
-  if (user===null){
-    return(
-      <div className="App">
-      <h1>Firebase aap</h1>
-      {/* <button onClick={putData}>put data</button>
-
-      <button onClick={signupUser}>create data</button> */}
-      <SignupPage/>
-      <SigninPage/>
-    </div>
-  );
-    
+import "./App.css";
+const firestore = getFirestore(app)
+const App=()=>{
+  const writeData=async()=>{
+    const result= await addDoc(collection(firestore,"cities"),{
+      name:"bengalore",
+      pincode:555674,
+      lat:123,
+      long:456,
+    });
+    console.log("Result",result)
   }
-  // const signupUser=()=>{
-  //   createUserWithEmailAndPassword
-  //   (auth,"laxmiyadav21@gmail.com",
-  //   "laxmi@123"
-  //   ).then((value)=>console.log(value));
-  // };
-  // const putData=()=>{
-  //   set(ref(db,"users/laxmi"),{
-  //     id:1,
-  //     name:"laxmi",
-  //     age:"17",
-  //   })
-  // }
-  return (
-    <div className="App">
-      <h1> hello {user.email}</h1>
-      {/* <button onClick={putData}>put data</button>
+  const makeSubCollection = async()=>{
+    await addDoc(collection(firestore,"cities/6R3V1fpoHMQeJx4fmqtM/places"),{
+      name:"This is place 2",
+      desc:"Awsm Desc",
+      date:Date.now()
+    })
+  };
+  const getDocument=async()=>{
+    const ref=doc(firestore,"cities","6R3V1fpoHMQeJx4fmqtM")
+    const snap =await getDoc(ref);
+    console.log(snap.data());
 
-      <button onClick={signupUser}>create data</button> */}
-     <button onClick={()=>signOut(auth)}>Logout</button>
-    </div>
-  );
+  }
+  const getDocumentsByQuery=async()=>{
+    const collectionRef=collection(firestore,"users");
+    const q =query(collectionRef,where("isFemale","==",true))
+   const snapshot= await getDocs(q);
+    snapshot.forEach(data => console.log(data.data()));
+  };
+  return(
+
+  <div>
+      <h1>Firebase Data</h1>
+      <button onClick={writeData}>Put Data</button>
+      <button onClick={makeSubCollection}>Put sub Data</button>
+      <button onClick={getDocument}>Get Document</button>
+      <button onClick={getDocumentsByQuery}>Get Document by query</button>
+
+  </div>
+  )
 }
-
 export default App;
