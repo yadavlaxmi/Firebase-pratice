@@ -1,53 +1,32 @@
-import {updateDoc,getDocs,getFirestore,collection,addDoc,doc,getDoc,query,where} from "firebase/firestore";
-import {app} from "./Firebase/Firebase"
-import "./App.css";
-const firestore = getFirestore(app)
-const App=()=>{
-  const writeData=async()=>{
-    const result= await addDoc(collection(firestore,"cities"),{
-      name:"bengalore",
-      pincode:555674,
-      lat:123,
-      long:456,
-    });
-    console.log("Result",result)
-  }
-  const makeSubCollection = async()=>{
-    await addDoc(collection(firestore,"cities/6R3V1fpoHMQeJx4fmqtM/places"),{
-      name:"This is place 2",
-      desc:"Awsm Desc",
-      date:Date.now()
-    })
-  };
-  const getDocument=async()=>{
-    const ref=doc(firestore,"cities","6R3V1fpoHMQeJx4fmqtM")
-    const snap =await getDoc(ref);
-    console.log(snap.data());
+import {useState} from "react"
 
-  }
-  const getDocumentsByQuery=async()=>{
-    const collectionRef=collection(firestore,"users");
-    const q =query(collectionRef,where("isFemale","==",true))
-   const snapshot= await getDocs(q);
-    snapshot.forEach(data => console.log(data.data()));
-  };
-  const update=async()=>{
-    const docRef=doc(firestore,"cities","6R3V1fpoHMQeJx4fmqtM");
-    await updateDoc(docRef,{
-      name:"kanpur"
-    })
+import {useFirebase} from "./Context/Firebase"
+const App=()=>{
+  const firebase=useFirebase();
+  const[email,setEmail]=useState("")
+  const[password,setPassword]=useState("")
+  console.log("Firebase",firebase)
+  const putDataNew=()=>{
+    firebase.putData("grandFather/Father/child",{id :1,name:"laxmi",age:19})
   }
   return(
+  <>
+  <h1>firebase</h1>
+  <input onChange={e=>setEmail(e.target.value)}
+  value={email}
+  type="email"
+    placeholder="enter email "/>
+  <input onChange={e=>setPassword(e.target.value)}
+  value={password}
+  type="passsword" 
+  placeholder="enter password "/>
+  <button onClick={()=>{
+    firebase.signupUserWithEmailAndPassword(email,password)
+    firebase.putData("users/"+ "laxmi",{email,password})
+    }}>Signup</button>
+    <button OnClick={putDataNew}>Trigger</button>
 
-  <div>
-      <h1>Firebase Data</h1>
-      <button onClick={writeData}>Put Data</button>
-      <button onClick={makeSubCollection}>Put sub Data</button>
-      <button onClick={getDocument}>Get Document</button>
-      <button onClick={getDocumentsByQuery}>Get Document by query</button>
-      <button onClick={update}>Update</button>
-
-  </div>
+  </>
   )
 }
-export default App;
+export default App
